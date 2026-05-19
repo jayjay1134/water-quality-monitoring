@@ -6,6 +6,6 @@ const firebaseConfig = {
   projectId: "water-quality-monitoring-fdb6d",
   storageBucket: "water-quality-monitoring-fdb6d.firebasestorage.app",
   messagingSenderId: "134970272586",
-  appId: "1:134970272586:web:ca8c758304dd53284f6fb3",
-  measurementId: "G-6N65CXC1RP"
+  appId: "1:134970272586:web:45efaee74d4000fc4f6fb3",
+  measurementId: "G-32DH1KD980"
 };
