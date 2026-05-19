@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sensor Data - WQMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if (localStorage.getItem("wqms_admin_logged_in") !== "true") window.location.href = "index.html";
+    </script>
+    <script type="module" src="assets/js/sensor-data.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">WQMS</div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="sensor-data.html">Sensor Data</a>
+        <a href="alerts.html">Alerts</a>
+        <a href="reports.html">Reports</a>
+        <a href="thresholds.html">Thresholds</a>
+        <a href="#" onclick="logout()" class="logout">Logout</a>
+    </aside>
+
+    <main class="main">
+        <section class="top-section">
+            <h1>Sensor Data</h1>
+            <button onclick="exportCSV()">Export CSV</button>
+        </section>
+
+        <section class="panel">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>pH</th>
+                            <th>Turbidity</th>
+                            <th>Temperature</th>
+                            <th>TDS</th>
+                            <th>DO</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="readingsTable"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function logout(){ localStorage.removeItem("wqms_admin_logged_in"); window.location.href="index.html"; }
+    </script>
+</body>
+</html>

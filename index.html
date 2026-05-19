@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login - WQMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="assets/js/login.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <div class="login-logo">WQMS</div>
+        <h1>Admin Login</h1>
+        <p>Advanced Water Quality Monitoring System</p>
+
+        <form id="loginForm">
+            <label>Username</label>
+            <input type="text" id="username" value="admin" required>
+
+            <label>Password</label>
+            <input type="password" id="password" value="admin123" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div id="loginError" class="error-message"></div>
+        <small>Prototype admin login only.</small>
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports - WQMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if (localStorage.getItem("wqms_admin_logged_in") !== "true") window.location.href = "index.html";
+    </script>
+    <script type="module" src="assets/js/reports.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">WQMS</div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="sensor-data.html">Sensor Data</a>
+        <a href="alerts.html">Alerts</a>
+        <a href="reports.html">Reports</a>
+        <a href="thresholds.html">Thresholds</a>
+        <a href="#" onclick="logout()" class="logout">Logout</a>
+    </aside>
+
+    <main class="main">
+        <section class="top-section">
+            <h1>Reports</h1>
+            <button onclick="window.print()">Print Report</button>
+        </section>
+
+        <section class="cards">
+            <div class="card"><span>Total Readings</span><strong id="totalReadings">0</strong></div>
+            <div class="card"><span>Safe</span><strong id="safeCount">0</strong></div>
+            <div class="card"><span>Warning</span><strong id="warningCount">0</strong></div>
+            <div class="card"><span>Unsafe</span><strong id="unsafeCount">0</strong></div>
+            <div class="card"><span>Total Alerts</span><strong id="alertCount">0</strong></div>
+        </section>
+
+        <section class="panel">
+            <h2>Report Interpretation</h2>
+            <p>The system summarizes the collected sensor readings from Firebase and classifies water quality as SAFE, WARNING, or UNSAFE based on the threshold settings.</p>
+        </section>
+    </main>
+
+    <script>
+        function logout(){ localStorage.removeItem("wqms_admin_logged_in"); window.location.href="index.html"; }
+    </script>
+</body>
+</html>

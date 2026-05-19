@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Threshold Management - WQMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        if (localStorage.getItem("wqms_admin_logged_in") !== "true") window.location.href = "index.html";
+    </script>
+    <script type="module" src="assets/js/thresholds.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">WQMS</div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="sensor-data.html">Sensor Data</a>
+        <a href="alerts.html">Alerts</a>
+        <a href="reports.html">Reports</a>
+        <a href="thresholds.html">Thresholds</a>
+        <a href="#" onclick="logout()" class="logout">Logout</a>
+    </aside>
+
+    <main class="main">
+        <section class="top-section">
+            <h1>Threshold Management</h1>
+            <p>Update safe ranges for automatic alert detection.</p>
+        </section>
+
+        <section class="panel">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Unit</th>
+                        <th>Minimum</th>
+                        <th>Maximum</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody id="thresholdTable"></tbody>
+            </table>
+
+            <button id="saveThresholds">Save Thresholds</button>
+            <div id="saveMessage" class="success-message"></div>
+        </section>
+    </main>
+
+    <script>
+        function logout(){ localStorage.removeItem("wqms_admin_logged_in"); window.location.href="index.html"; }
+    </script>
+</body>
+</html>
