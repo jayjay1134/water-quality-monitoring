@@ -1,83 +1,54 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-import {
-    getDatabase,
-    ref,
-    onValue,
-    query,
-    limitToLast,
-    set
-} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
-import { firebaseConfig } from "./firebase-config.js";
+let sensorChart;
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+async function loadChart() {
+    const res = await fetch('api/chart.php');
+    const json = await res.json();
+    const rows = json.data || [];
 
-function formatDate(timestamp) {
-    if (!timestamp) return "--";
-    return new Date(timestamp).toLocaleString();
-}
+    const labels = rows.map(r => r.created_at);
+    const datasets = [
+        { label: 'pH', data: rows.map(r => Number(r.ph)) },
+        { label: 'Turbidity', data: rows.map(r => Number(r.turbidity)) },
+        { label: 'Temperature', data: rows.map(r => Number(r.temperature)) },
+        { label: 'TDS / 100', data: rows.map(r => Number(r.tds) / 100) },
+        { label: 'DO', data: rows.map(r => Number(r.dissolved_oxygen)) }
+    ];
 
-function getStatusClass(status) {
-    const value = String(status || "").toLowerCase();
-    if (value === "safe") return "safe";
-    if (value === "warning") return "warning";
-    if (value === "unsafe") return "unsafe";
-    return "safe";
-}
+    const ctx = document.getElementById('sensorChart');
+    if (!ctx) return;
 
-function safeNumber(value, decimals = 2) {
-    const num = Number(value);
-    if (Number.isNaN(num)) return "--";
-    return num.toFixed(decimals);
-}
-
-const thresholdsRef = ref(db, "thresholds");
-
-const defaultThresholds = {
-    ph: { unit: "pH", min: 6.5, max: 8.5, message: "Unsafe pH detected" },
-    turbidity: { unit: "NTU", min: 0, max: 5, message: "High turbidity detected" },
-    temperature: { unit: "°C", min: 20, max: 35, message: "Unsafe temperature detected" },
-    tds: { unit: "ppm", min: 0, max: 500, message: "High TDS detected" },
-    dissolved_oxygen: { unit: "mg/L", min: 5, max: 14, message: "Low dissolved oxygen detected" }
-};
-
-let thresholds = {};
-
-onValue(thresholdsRef, snapshot => {
-    thresholds = snapshot.val() || defaultThresholds;
-
-    if (!snapshot.val()) {
-        set(thresholdsRef, defaultThresholds);
+    if (sensorChart) {
+        sensorChart.data.labels = labels;
+        sensorChart.data.datasets.forEach((ds, i) => ds.data = datasets[i].data);
+        sensorChart.update();
+        return;
     }
 
-    renderThresholds();
-});
-
-function renderThresholds() {
-    const table = document.getElementById("thresholdTable");
-    table.innerHTML = "";
-
-    Object.keys(thresholds).forEach(key => {
-        const t = thresholds[key];
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${key}</td>
-            <td>${t.unit || ""}</td>
-            <td><input type="number" step="0.01" id="${key}_min" value="${t.min}"></td>
-            <td><input type="number" step="0.01" id="${key}_max" value="${t.max}"></td>
-            <td>${t.message || ""}</td>
-        `;
-        table.appendChild(tr);
+    sensorChart = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#e5e7eb' } } },
+            scales: {
+                x: { ticks: { color: '#94a3b8', maxRotation: 45 }, grid: { color: '#1e293b' } },
+                y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+            }
+        }
     });
 }
 
-document.getElementById("saveThresholds").addEventListener("click", async () => {
-    Object.keys(thresholds).forEach(key => {
-        thresholds[key].min = Number(document.getElementById(`${key}_min`).value);
-        thresholds[key].max = Number(document.getElementById(`${key}_max`).value);
+async function loadLatest() {
+    const res = await fetch('api/latest.php');
+    const json = await res.json();
+    const r = json.data;
+    if (!r) return;
+    ['ph','turbidity','temperature','tds','dissolved_oxygen'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = r[id];
     });
+}
 
-    await set(thresholdsRef, thresholds);
-    document.getElementById("saveMessage").textContent = "Thresholds saved successfully.";
-});
+loadChart();
+loadLatest();
+setInterval(() => { loadLatest(); loadChart(); }, 5000);
